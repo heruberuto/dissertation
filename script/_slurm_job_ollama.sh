@@ -34,9 +34,11 @@ export OLLAMA_HOST="http://$HOSTNAME:$PORT"
 
 # Save to a file so your Python process can also load it if needed
 echo $PORT > logs/ollama.${SLURM_JOB_ID}.log
-
+echo "Starting Ollama server..."
+echo "tunnelling instructions: ssh -N -L 11434:$HOSTNAME:$PORT ullriher@login.rci.cvut.cz"
 nohup ollama serve > logs/ollama.${SLURM_JOB_ID}.log 2>&1 &
 
 
 export PYTHONPATH=src:$PYTHONPATH
 jupyter notebook --no-browser --port=$(shuf -i8000-9999 -n1) --ip=$(hostname -s)
+

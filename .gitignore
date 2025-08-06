@@ -208,3 +208,4 @@ __marimo__/
 ollama.crt
 logs/*
 logs
+ml_avail.txt
