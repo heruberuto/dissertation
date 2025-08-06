@@ -33,8 +33,14 @@ sbatch script/_slurm_job.sh
 # Submit job with Ollama server + Jupyter
 sbatch script/_slurm_job_ollama.sh
 
+# Submit job with Ollama + Open WebUI (web-based chat interface)
+sbatch script/_slurm_job_openwebui.sh
+
 # Get Jupyter notebook URL from logs
 python script/jupyter_url.py
+
+# Get Open WebUI and Ollama API URLs from logs
+python script/openwebui_url.py
 ```
 
 ### Ollama Setup
@@ -70,9 +76,14 @@ ollama pull gpt-oss:20b
 
 ### Development Workflow
 1. Submit SLURM job to get compute resources with GPU
-2. Access Jupyter notebook via generated URL
+2. Access Jupyter notebook via generated URL or use Open WebUI for web-based chat
 3. Use Ollama for local LLM inference alongside cloud APIs
 4. Experiment with Czech language models and fact-checking datasets
+
+### Available Interfaces
+- **Jupyter Notebooks**: Traditional notebook environment for development and analysis
+- **Open WebUI**: Modern web-based chat interface for interacting with Ollama models
+- **Direct API**: Raw Ollama API access for programmatic usage
 
 ## Important Notes
 
@@ -81,3 +92,5 @@ ollama pull gpt-oss:20b
 - Custom Ollama installation supports the HPC environment constraints
 - Jobs automatically handle port conflicts and SSL certificate management
 - Use `script/jupyter_url.py` to extract notebook URLs from SLURM logs
+- Use `script/openwebui_url.py` to extract Open WebUI and Ollama API URLs
+- Docker containers provide isolated environments for Ollama and Open WebUI services
