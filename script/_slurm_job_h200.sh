@@ -37,7 +37,7 @@ export OLLAMA_HOST="$HOSTNAME:$PORT"
 # Save to a file so your Python process can also load it if needed
 echo $PORT > logs/ollama.${SLURM_JOB_ID}.log
 echo "Starting Ollama server..."
-echo "tunnelling instructions: ssh -N -L 11434:$HOSTNAME:$PORT ullriher@login.rci.cvut.cz"
+echo -e "tunnelling instructions:\nssh -N -L 11434:$HOSTNAME:$PORT ullriher@login3.rci.cvut.cz"
 nohup ollama serve > logs/ollama.${SLURM_JOB_ID}.log 2>&1 &
 
 
