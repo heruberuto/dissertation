@@ -13,7 +13,7 @@ import json
 import os
 from typing import Any, Dict, List, Optional, Union
 from langchain_core.prompts import ChatPromptTemplate
-
+from langchain_openai import ChatOpenAI
 
 class SimpleJSONChat:
     def __init__(
@@ -94,6 +94,63 @@ class SimpleJSONChat:
         Returns:
             str: A string representation of the object.
         """
+        return self.__repr__()
+
+
+class LangChainJSONChat:
+    def __init__(
+        self,
+        prompt: ChatPromptTemplate,
+        llm: Optional[Any] = None,
+        model: str = "gpt-4o-mini",
+        temperature: float = 0.0,
+        parse_output: bool = True,
+        **llm_kwargs: Any,
+    ) -> None:
+        """
+        Initialize a LangChainJSONChat to interact via LangChain with a ChatPromptTemplate.
+
+        Args:
+            prompt (ChatPromptTemplate): A ChatPromptTemplate with variables to be formatted at call time.
+            llm (Optional[Any]): A LangChain ChatModel instance. If None, ChatOpenAI will be created.
+            model (str): The model name passed to ChatOpenAI if llm is None.
+            temperature (float): Temperature for the model.
+            parse_output (bool): If True, parse the output as JSON.
+            **llm_kwargs: Additional keyword args forwarded to ChatOpenAI.
+        """
+        self.prompt = prompt
+        self.parse_output = parse_output
+        self.model = model
+        self.temperature = temperature
+        self.llm_kwargs = llm_kwargs
+        self.llm = llm or ChatOpenAI(model=model, temperature=temperature, **llm_kwargs)
+
+    def __call__(self, variables: Dict[str, Any]) -> Union[Dict[str, Any], str, List]:
+        """
+        Invoke the LangChain pipeline with a dict of variables for the prompt.
+
+        Args:
+            variables (Dict[str, Any]): Variables to format the ChatPromptTemplate.
+
+        Returns:
+            Union[Dict[str, Any], str, List]: Parsed JSON if parse_output else raw string; [] on parse error.
+        """
+        if not isinstance(variables, dict):
+            raise TypeError("variables must be a dict")
+        messages = self.prompt.format_messages(**variables)
+        response = self.llm.invoke(messages)
+        content = getattr(response, "content", str(response))
+        try:
+            cleaned = content.replace("```json", "").replace("```", "").strip()
+            return json.loads(cleaned) if self.parse_output else content
+        except Exception:
+            print("Error parsing response from LangChainJSONChat.\n", content)
+            return []
+
+    def __repr__(self) -> str:
+        return f"LangChainJSONChat(model={self.model}, temperature={self.temperature}, llm_kwargs={self.llm_kwargs})"
+
+    def __str__(self) -> str:
         return self.__repr__()
 
 

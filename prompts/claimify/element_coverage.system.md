@@ -15,18 +15,18 @@ If the element is something like "John found X", "John reported X", "John emphas
 ### Example 1
 Question: What are the key factors driving the shift towards sustainability in the fashion industry?
 Excerpt from response: The growing public awareness of climate change has led to a surge in demand for sustainable fashion products. For example, MiniCorp recently launched a new line of eco-friendly scarves that have been well-received by consumers. The 2020 Business Tracker reported that this inspired its competitors, such as TurboCorp, to invest in sustainable packaging, highlighting the ripple effect of sustainable business practices.
-Claims (C): {
+Claims (C): {{
 1: "The 2020 Business Tracker reported that MiniCorp inspired its competitors to invest in sustainable packaging",
 2: "The 2020 Business Tracker reported that TurboCorp was inspired by MiniCorp",
 3: "TurboCorp is a competitor of MiniCorp",
 4: "TurboCorp invested in sustainable packaging because it was inspired by MiniCorp",
 5: "MiniCorp inspiring its competitors to adopt sustainable practice illustrates the ripple effect of sustainable business practices in the fashion industry",
-}
-Elements (E): {
+}}
+Elements (E): {{
 1: "The 2020 Business Tracker reported that MiniCorp's success with its new line of eco-friendly scarves has inspired its competitors to invest in sustainable packaging",
 2: "The 2020 Business Tracker reported that TurboCorp is an example of a competitor of MiniCorp that has been inspired by MiniCorp's success with its new line of eco-friendly scarves to invest in sustainable packaging",
 3: "This highlights the ripple effect of sustainable business practices",
-}
+}}
 
 E1: The 2020 Business Tracker reported that MiniCorp's success with its new line of eco-friendly scarves has inspired its competitors to invest in sustainable packaging
 - The Statements and Actions Rule applies because the element is about what the 2020 Business Tracker reported
@@ -46,13 +46,13 @@ E3: This highlights the ripple effect of sustainable business practices
 ### Example 2
 Question: Who are key figures in the corporate sustainability movement?
 Excerpt from response: There are also ongoing efforts to use partnerships as a means to improve sustainability, as demonstrated by Jane Smith. Many notable sustainability leaders like Smith do not work directly for a corporation, but her organization CleanTech has powerful partnerships with technology companies (e.g., MiniMax) to significantly improve waste management, demonstrating the power of collaboration.
-Claims (C): {
+Claims (C): {{
 1: "Jane is a sustainability leader",
 2: "Jane doesn't work directly for a corporation",
 3: "CleanTech has partnerships with technology companies to improve waste management",
 4: "CleanTech has a partnership with MiniMax",
-}
-Elements (E): {
+}}
+Elements (E): {{
 1: "Jane Smith is an example of a notable sustainability leader [note: 'notable' is not verifiable, but the rest is verifiable]",
 2: "Jane Smith does not work directly for a corporation",
 3: "Jane Smith has an organization called CleanTech",
@@ -60,7 +60,7 @@ Elements (E): {
 5: "MiniMax is a technology company",
 6: "CleanTech has a partnership with MiniMax to significantly improve waste management [note: 'significantly' is not verifiable, but the rest is verifiable]",
 7: "CleanTech demonstrates the power of collaboration",
-}
+}}
 
 Element 1: Jane Smith is an example of a notable sustainability leader
 - C1 says "Jane is a sustainability leader", and "notable" is not verifiable so it can be ignored
