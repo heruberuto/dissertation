@@ -10,6 +10,7 @@ Functions:
 
 import openai
 import json
+import os
 from typing import Any, Dict, List, Optional, Union
 
 
@@ -117,3 +118,25 @@ def pretty_print(text: str, break_line_at: int = 90) -> str:
             lines.append(word)
 
     return "\n".join(lines)
+
+def load_md_prompts(folder: str) -> Dict[str, str]:
+    """
+    Load Markdown prompts from a folder.
+
+    Args:
+        folder (str): The folder containing the Markdown files.
+
+    Returns:
+        Dict[str, str]: A dictionary mapping file names to their contents.
+    """
+    prompts = {}
+    folder = os.path.join(os.path.dirname(__file__), "../../prompts", folder)
+    for filename in os.listdir(folder):
+        if filename.endswith(".md"):
+            # pair system prompts with user prompts
+            id, role = filename.split(".")[:2]
+            if id not in prompts:
+                prompts[id] = {}
+            with open(os.path.join(folder, filename), "r") as f:
+                prompts[id][role] = f.read()
+    return prompts
