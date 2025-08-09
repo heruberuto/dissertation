@@ -13,11 +13,24 @@ The project focuses on developing and evaluating automated fact checking systems
 
 ## Project Structure
 
-- `data/` - Datasets and data processing scripts
-- `models/` - Model implementations and training code
-- `experiments/` - Experimental setups and evaluation scripts
-- `results/` - Analysis results and findings
-- `docs/` - Documentation and research notes
+- `src/` - Source code and utilities
+  - `utils/` - Utility functions and classes (e.g., chat interfaces)
+  - `prompts/` - Prompt templates and configurations
+    - `claimify/` - Claimify prompts for claim extraction and evaluation, authored by [Metropolitansky & Larson (2025)](https://aclanthology.org/2025.acl-long.348/)
+- `notebooks/` - Jupyter notebooks for experiments and analysis
+- `script/` - SLURM job scripts and utility scripts for HPC deployment
+- `logs/` - Job output and server logs
+- `requirements.txt` - Python dependencies for ML/NLP tasks
+
+## Technology Stack
+
+- **Environment**: HPC clusters with SLURM job scheduling
+- **ML Framework**: PyTorch with CUDA support, Transformers, LangChain
+- **NLP Libraries**: spaCy, NLTK, sentence-transformers
+- **Data Processing**: pandas, PyMuPDF, trafilatura
+- **Search/Retrieval**: FAISS, rank-bm25
+- **LLM Integration**: Ollama, OpenAI API, Hugging Face
+- **Czech Language Focus**: Specialized for Czech text processing and fact-checking
 
 ## Research Focus
 
@@ -29,5 +42,27 @@ The dissertation addresses the challenges of automated fact checking in Czech, i
 
 ## Getting Started
 
-[Documentation for setup and usage will be added as the project develops]
+See `CLAUDE.md` for detailed setup instructions including environment configuration and SLURM job submission.
+
+## Credits and References
+
+The Claimify prompts in `src/prompts/claimify/` are adapted from:
+
+> Metropolitansky, Dasha and Larson, Jonathan. "Towards Effective Extraction and Evaluation of Factual Claims." *Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*. Vienna, Austria: Association for Computational Linguistics, July 2025, pages 6996-7045. DOI: 10.18653/v1/2025.acl-long.348
+
+```bibtex
+@inproceedings{metropolitansky-larson-2025-towards,
+    title = "Towards Effective Extraction and Evaluation of Factual Claims",
+    author = "Metropolitansky, Dasha and Larson, Jonathan",
+    editor = "Che, Wanxiang and Nabende, Joyce and Shutova, Ekaterina and Pilehvar, Mohammad Taher",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-long.348/",
+    doi = "10.18653/v1/2025.acl-long.348",
+    pages = "6996--7045",
+    ISBN = "979-8-89176-251-0"
+}
 
