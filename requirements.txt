@@ -16,9 +16,10 @@ faiss-gpu-cu12[fix-cuda]
 dirtyjson
 aenum
 protobuf
+ollama
 langchain
 langchain-community
 langchain-core
 langchain-huggingface
 langchain-openai
-ollama
+langchain-ollama
