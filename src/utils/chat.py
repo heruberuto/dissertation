@@ -12,6 +12,7 @@ import openai
 import json
 import os
 from typing import Any, Dict, List, Optional, Union
+from langchain_core.prompts import ChatPromptTemplate
 
 
 class SimpleJSONChat:
@@ -119,7 +120,8 @@ def pretty_print(text: str, break_line_at: int = 90) -> str:
 
     return "\n".join(lines)
 
-def load_md_prompts(folder: str) -> Dict[str, str]:
+
+def load_md_prompts(folder: str, as_langchain: bool = False) -> Dict[str, str]:
     """
     Load Markdown prompts from a folder.
 
@@ -139,4 +141,11 @@ def load_md_prompts(folder: str) -> Dict[str, str]:
                 prompts[id] = {}
             with open(os.path.join(folder, filename), "r") as f:
                 prompts[id][role] = f.read()
+    if as_langchain:
+        prompt_templates = {}
+        for id, roles in prompts.items():
+            prompt_templates[id] = ChatPromptTemplate.from_messages(
+                [("system", roles.get("system", "").strip()), ("user", roles.get("user", "").strip())]
+            )
+        return prompt_templates
     return prompts
