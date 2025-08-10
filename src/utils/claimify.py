@@ -207,10 +207,9 @@ def run_disambiguation_stage(chat, question: str, excerpt: str, sentence: str) -
     Returns:
         Tuple of (status, processed_sentence) where status is 'resolved', 'unresolvable', or 'error'
     """
-    structured_response = chat.invoke(
-        get_prompt("claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence})
-    )
-    
+    prompt = get_prompt("claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence})
+    structured_response = chat.invoke(prompt)
+
     if not structured_response:
         return "error", None
 
