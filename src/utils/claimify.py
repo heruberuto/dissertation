@@ -158,7 +158,7 @@ def create_context_for_sentence(
 
 def run_selection_stage(chat, question: str, excerpt: str, sentence: str) -> Tuple[str, str]:
     prompt = get_prompt("claimify", "selection", {"question": question, "excerpt": excerpt, "sentence": sentence})
-    structured_response = chat.invoke(prompt).content
+    structured_response = chat.invoke(prompt)
 
     if not structured_response:
         return "error", None
@@ -209,7 +209,7 @@ def run_disambiguation_stage(chat, question: str, excerpt: str, sentence: str) -
     """
     structured_response = chat.invoke(
         get_prompt("claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence})
-    ).content
+    )
     
     if not structured_response:
         return "error", None
@@ -257,7 +257,7 @@ def run_decomposition_stage(chat, question: str, excerpt: str, sentence: str) ->
     """
     structured_response = chat.invoke(
         get_prompt("claimify", "decomposition", {"question": question, "excerpt": excerpt, "sentence": sentence})
-    ).content
+    )
 
     if not structured_response:
         return []
@@ -295,16 +295,9 @@ class ClaimifyPipeline:
         # Set up logging
         self.setup_logging()
 
-        # Verify structured outputs are supported
-        if not chat.supports_structured_outputs():
-            self.chat_selection = chat.with_structured_output(SelectionResponse)
-            self.chat_disambiguation = chat.with_structured_output(DisambiguationResponse)
-            self.chat_decomposition = chat.with_structured_output(DecompositionResponse)
-            
-            raise ValueError(
-                f"Model {chat.model} does not support structured outputs. "
-                f"Please use a compatible model like gpt-4o-2024-08-06, gpt-4o-mini, or gpt-4o."
-            )
+        self.chat_selection = chat.with_structured_output(SelectionResponse)
+        self.chat_disambiguation = chat.with_structured_output(DisambiguationResponse)
+        self.chat_decomposition = chat.with_structured_output(DecompositionResponse)
 
         if self.logger:
             self.logger.info("Structured outputs enabled for improved reliability")

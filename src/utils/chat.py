@@ -224,14 +224,14 @@ def load_md_prompts(prompt_category: str, prompt_name: str = None) -> Dict[str, 
 
 
 def get_prompt(
-    prompt_name: str, prompt_category: str = None, values: dict = None
+    prompt_category: str, prompt_name: str = None, values: dict = None
 ) -> Optional[ChatPromptTemplate]:
-    if prompt_category is None:
-        prompt_category, prompt_name = prompt_name.split("/")
+    if prompt_name is None:
+        prompt_category, prompt_name = prompt_category.split("/")
 
     prompt = load_md_prompts(prompt_category, prompt_name)
     if values:
-        prompt = prompt.format(**values)
+        prompt = prompt.format_messages(**values)
     return prompt
 
 
