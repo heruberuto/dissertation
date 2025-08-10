@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional, Union
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
+
 class SimpleJSONChat:
     def __init__(
         self,
@@ -178,7 +179,10 @@ def pretty_print(text: str, break_line_at: int = 90) -> str:
     return "\n".join(lines)
 
 
-def load_md_prompts(folder: str, as_langchain: bool = False) -> Dict[str, str]:
+PROMPT_TEMPLATES = {}
+
+
+def load_md_prompts(prompt_category: str, prompt_name: str = None) -> Dict[str, str]:
     """
     Load Markdown prompts from a folder.
 
@@ -188,21 +192,31 @@ def load_md_prompts(folder: str, as_langchain: bool = False) -> Dict[str, str]:
     Returns:
         Dict[str, str]: A dictionary mapping file names to their contents.
     """
-    prompts = {}
-    folder = os.path.join(os.path.dirname(__file__), "../../prompts", folder)
-    for filename in os.listdir(folder):
-        if filename.endswith(".md"):
-            # pair system prompts with user prompts
-            id, role = filename.split(".")[:2]
-            if id not in prompts:
-                prompts[id] = {}
-            with open(os.path.join(folder, filename), "r") as f:
-                prompts[id][role] = f.read()
-    if as_langchain:
+    global PROMPT_TEMPLATES
+    if prompt_category not in PROMPT_TEMPLATES or (
+        prompt_name is not None and prompt_name not in PROMPT_TEMPLATES[prompt_category]
+    ):
+        prompts = {}
+        folder = os.path.join(os.path.dirname(__file__), "../../prompts", prompt_category)
+        for filename in os.listdir(folder):
+            if filename.endswith(".system.md") or filename.endswith(".user.md"):
+                # pair system prompts with user prompts
+                id, role = filename.split(".")[:2]
+                if id not in prompts:
+                    prompts[id] = {}
+                with open(os.path.join(folder, filename), "r") as f:
+                    prompts[id][role] = f.read()
+
         prompt_templates = {}
         for id, roles in prompts.items():
             prompt_templates[id] = ChatPromptTemplate.from_messages(
                 [("system", roles.get("system", "").strip()), ("user", roles.get("user", "").strip())]
             )
-        return prompt_templates
-    return prompts
+        if prompt_category not in PROMPT_TEMPLATES:
+            PROMPT_TEMPLATES[prompt_category] = {}
+        PROMPT_TEMPLATES[prompt_category].update(prompt_templates)
+    if prompt_name is None:
+        return PROMPT_TEMPLATES[prompt_category]
+    if prompt_name in PROMPT_TEMPLATES[prompt_category]:
+        return PROMPT_TEMPLATES[prompt_category][prompt_name]
+    return None

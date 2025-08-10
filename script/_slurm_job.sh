@@ -18,8 +18,7 @@ source /mnt/personal/ullriher/venvs/aug25/bin/activate
 # Replace with absolute path to your project or sbatch from project root and comment out
 # cd ~/ullriher/aic_averitec
 
-# load your .env
-source .env
+
  
 export SSL_CERT_FILE=~/ollama.crt
 PORT=$(shuf -i 20000-40000 -n 1)
@@ -37,7 +36,8 @@ echo $PORT > logs/ollama.${SLURM_JOB_ID}.log
 echo "Starting Ollama server..."
 echo -e "tunnelling instructions:\nssh -N -L 11434:$HOSTNAME:$PORT ullriher@login3.rci.cvut.cz"
 nohup ollama serve > logs/ollama.${SLURM_JOB_ID}.log 2>&1 &
-
+# load your .env
+export $(grep -v '^#' .env | xargs)
 
 export PYTHONPATH=src:$PYTHONPATH
 jupyter notebook --no-browser --port=$(shuf -i8000-9999 -n1) --ip=$(hostname -s)

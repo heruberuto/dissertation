@@ -34,7 +34,7 @@ echo $PORT > logs/ollama.${SLURM_JOB_ID}.log
 nohup ollama serve > logs/ollama.${SLURM_JOB_ID}.log 2>&1 &
 
 # load your .env    
-source .env
+export $(grep -v '^#' .env | xargs)
 
 export PYTHONPATH=src:$PYTHONPATH
 jupyter notebook --no-browser --port=$(shuf -i8000-9999 -n1) --ip=$(hostname -s)
