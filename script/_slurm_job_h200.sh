@@ -7,8 +7,7 @@
 #SBATCH --time 4:00:00
 #SBATCH --job-name averitec
 #SBATCH --output logs/jupyter.%j.out
-unset LMOD_ROOT; unset MODULESHOME; unset LMOD_PKG; unset LMOD_CMD; unset LMOD_DIR; unset FPATH; unset __LMOD_REF_COUNT_MODULEPATH; unset __LMOD_REF_COUNT__LMFILES_; unset _LMFILES_; unset _ModuleTable001_; unset _ModuleTable002_
-source /etc/profile.d/lmod.sh
+
 
 # Replace with your own virtual environment
 ml Python/3.12.3-GCCcore-13.3.0
@@ -23,7 +22,7 @@ source /mnt/personal/ullriher/venvs/aug25/bin/activate
 # load your .env
 export $(grep -v '^#' .env | xargs)
  
-export SSL_CERT_FILE=~/ollama.crt
+# export SSL_CERT_FILE=~/ollama.crt
 PORT=$(shuf -i 2000-9999 -n 1)
 while lsof -i TCP:$PORT &>/dev/null; do
     PORT=$(shuf -i 2000-9999 -n 1)

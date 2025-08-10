@@ -17,7 +17,7 @@ ml OpenSSL/3
 
 source /mnt/personal/ullriher/venvs/aug25/bin/activate
 
-export SSL_CERT_FILE=~/ollama.crt
+# export SSL_CERT_FILE=~/ollama.crt
 PORT=$(shuf -i 20000-40000 -n 1)
 while lsof -i TCP:$PORT &>/dev/null; do
     PORT=$(shuf -i 20000-40000 -n 1)
