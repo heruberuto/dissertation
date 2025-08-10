@@ -14,7 +14,7 @@ import sys
 import logging
 from typing import List, Tuple
 from utils.chat import get_prompt
-from models.claimify_models import SelectionResponse, DisambiguationResponse, DecompositionResponse
+from models.claimify import SelectionResponse, DisambiguationResponse, DecompositionResponse
 
 
 def ensure_nltk_data():
