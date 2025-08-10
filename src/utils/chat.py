@@ -14,6 +14,7 @@ import os
 from typing import Any, Dict, List, Optional, Union
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 
 class SimpleJSONChat:
@@ -219,4 +220,26 @@ def load_md_prompts(prompt_category: str, prompt_name: str = None) -> Dict[str, 
         return PROMPT_TEMPLATES[prompt_category]
     if prompt_name in PROMPT_TEMPLATES[prompt_category]:
         return PROMPT_TEMPLATES[prompt_category][prompt_name]
+    return None
+
+
+def get_prompt(prompt_name: str, prompt_category: str = None, values: dict = None) -> Optional[ChatPromptTemplate]:
+    if prompt_category is None:
+        prompt_category, prompt_name = prompt_name.split("/")
+
+    prompt = load_md_prompts(prompt_category, prompt_name)
+    if values:
+        prompt = prompt.format(**values)
+    return prompt
+
+
+def chat_factory(model_name: str, temperature: float = 0.0, output_structure: Any = None, **kwargs):
+    if ":" in model_name:
+        return ChatOllama(model_name, temperature=temperature, **kwargs)
+    elif "gpt" in model_name:
+        result = ChatOpenAI(model_name=model_name, temperature=temperature, **kwargs)
+        if output_structure is not None:
+            result = result.with_structured_output(output_structure)
+        return result
+
     return None
