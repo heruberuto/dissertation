@@ -9,6 +9,7 @@ This project is a Czech fact-checking research repository that runs on HPC clust
 - Python 3.12.3 with specific ML libraries (see requirements.txt)
 - CUDA 12.6.0 for GPU acceleration
 - Ollama for local LLM inference
+- LangChain framework for LLM orchestration
 - Virtual environment at `/mnt/personal/ullriher/venvs/aug25/`
 
 ## Key Commands
@@ -56,17 +57,30 @@ ollama pull gpt-oss:20b
 
 ### Core Structure
 - `notebooks/` - Jupyter notebooks for experiments and analysis
+  - `claimify.ipynb` - Claimify claim extraction pipeline experiments
+  - `hello.ipynb` - Basic environment testing
+- `src/` - Source code modules
+  - `models/` - Pydantic models for structured LLM outputs
+    - `claimify.py` - Data models for claim extraction pipeline
+    - `reasoning.py` - Base model for reasoning-enabled LLM interactions
+  - `utils/` - Utility modules
+    - `chat.py` - LangChain chat factory and prompt management
+    - `claimify.py` - Complete Claimify pipeline implementation
+- `prompts/claimify/` - Structured prompts for claim extraction stages
+  - Selection, disambiguation, decomposition, and other specialized prompts
 - `script/` - SLURM job scripts and utility scripts
 - `logs/` - Job output and Ollama server logs
 - `requirements.txt` - Python dependencies for ML/NLP tasks
 
 ### Technology Stack
-- **ML Framework**: PyTorch with CUDA support, Transformers, LangChain
+- **ML Framework**: PyTorch with CUDA support, Transformers
+- **LLM Orchestration**: LangChain ecosystem (langchain-core, langchain-community, langchain-openai, langchain-ollama, langchain-huggingface)
 - **NLP Libraries**: spaCy, NLTK, sentence-transformers
-- **Data Processing**: pandas, PyMuPDF (PDF processing), trafilatura (web scraping)
+- **Data Processing**: pandas, PyMuPDF (PDF processing), trafilatura (web scraping), dirtyjson
 - **Search/Retrieval**: FAISS, rank-bm25
 - **LLM Integration**: Ollama, OpenAI API, Hugging Face
 - **Czech Language Focus**: Specialized for Czech text processing and fact-checking
+- **Claim Extraction**: Claimify pipeline implementation (based on Microsoft Research methodology)
 
 ### SLURM Configuration
 - Uses AMD GPU partitions (`amdgpu`, `amdgpufast`)
@@ -84,6 +98,32 @@ ollama pull gpt-oss:20b
 - **Jupyter Notebooks**: Traditional notebook environment for development and analysis
 - **Open WebUI**: Modern web-based chat interface for interacting with Ollama models
 - **Direct API**: Raw Ollama API access for programmatic usage
+- **LangChain Integration**: Unified interface for multiple LLM providers (OpenAI, Ollama, Hugging Face)
+- **Structured Outputs**: Pydantic models for reliable LLM response parsing
+
+## Key Features
+
+### Claimify Implementation
+This repository includes a complete reproduction of the Claimify methodology for factual claim extraction, based on the implementation by Adam Gustavsson (https://github.com/AdamGustavsson/ClaimsMCP). Key features:
+
+- **Multi-stage Pipeline**: Implements sentence splitting, selection, disambiguation, and decomposition stages
+- **Structured Outputs**: Uses Pydantic models with LangChain for reliable claim extraction
+- **Research-Based**: Follows the methodology from Microsoft Research's "Claimify" paper
+- **Czech Language Support**: Adapted for Czech text processing and fact-checking
+- **Flexible LLM Backend**: Supports both OpenAI and Ollama models
+
+### LangChain Migration
+The project has been fully migrated to the LangChain ecosystem:
+
+- **Unified Chat Interface**: `chat_factory()` function supports multiple LLM providers
+- **Prompt Management**: Structured prompts loaded from markdown files
+- **Structured Outputs**: Pydantic models for reliable response parsing
+- **Provider Flexibility**: Easy switching between OpenAI, Ollama, and Hugging Face models
+
+### Reasoning Models
+Integration of reasoning-capable models through:
+- **ReasoningBaseModel**: Pydantic base class that includes chain-of-thought reasoning fields
+- **Thinking Models**: Support for models that provide explicit reasoning steps
 
 ## Important Notes
 
@@ -93,4 +133,5 @@ ollama pull gpt-oss:20b
 - Jobs automatically handle port conflicts and SSL certificate management
 - Use `script/jupyter_url.py` to extract notebook URLs from SLURM logs
 - Use `script/openwebui_url.py` to extract Open WebUI and Ollama API URLs
+- LangChain replaces direct API calls for better maintainability and flexibility
 - Docker containers provide isolated environments for Ollama and Open WebUI services
