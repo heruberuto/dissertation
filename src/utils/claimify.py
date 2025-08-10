@@ -12,85 +12,9 @@ import nltk
 import os
 import sys
 import logging
-from typing import List, Tuple, Optional, Literal
-from pydantic import BaseModel, Field
-from utils.chat import chat_factory, get_prompt
-
-class SelectionResponse(BaseModel):
-    """Response model for the Selection stage."""
-
-    sentence: str = Field(description="The original sentence being analyzed")
-
-    thought_process: str = Field(
-        description="4-step stream of consciousness thought process analyzing the sentence"
-    )
-
-    final_submission: Literal[
-        "Contains a specific and verifiable proposition",
-        "Does NOT contain a specific and verifiable proposition",
-    ] = Field(description="Whether the sentence contains a specific and verifiable proposition")
-
-    sentence_with_only_verifiable_information: Optional[str] = Field(
-        description="The sentence with only verifiable information, 'remains unchanged' if no changes needed, or None if no verifiable proposition",
-        default=None,
-    )
-
-
-class DisambiguationResponse(BaseModel):
-    """Response model for the Disambiguation stage."""
-
-    incomplete_names_acronyms_abbreviations: str = Field(
-        description="Analysis of partial names and undefined acronyms/abbreviations in the sentence"
-    )
-
-    linguistic_ambiguity_analysis: str = Field(
-        description="Step-by-step analysis of referential and structural ambiguity in the sentence"
-    )
-
-    changes_needed: Optional[str] = Field(
-        description="List of changes needed to decontextualize the sentence, or None if cannot be decontextualized",
-        default=None,
-    )
-
-    decontextualized_sentence: Optional[str] = Field(
-        description="The final decontextualized sentence, or 'Cannot be decontextualized' if ambiguity cannot be resolved",
-        default=None,
-    )
-
-
-class Claim(BaseModel):
-    """A single factual claim with verification properties."""
-
-    text: str = Field(description="The claim text with essential context/clarifications in brackets")
-
-    verifiable: bool = Field(
-        description="Always True - indicates this claim can be fact-checked as true or false", default=True
-    )
-
-
-class DecompositionResponse(BaseModel):
-    """Response model for the Decomposition stage."""
-
-    sentence: str = Field(description="The sentence being decomposed")
-
-    referential_terms: Optional[str] = Field(
-        description="Overview of referential terms whose referents must be clarified, or 'None' if no referential terms",
-        default=None,
-    )
-
-    max_clarified_sentence: str = Field(
-        description="Sentence that articulates discrete units of information and clarifies referents"
-    )
-
-    proposition_range: str = Field(description="The range of possible number of propositions (e.g., '3-5')")
-
-    propositions: List[str] = Field(
-        description="List of specific, verifiable, and decontextualized propositions"
-    )
-
-    final_claims: List[Claim] = Field(
-        description="Final list of claims with text and verifiable property (always True) to guide LLM thinking about fact-checkability"
-    )
+from typing import List, Tuple
+from utils.chat import get_prompt
+from models.claimify_models import SelectionResponse, DisambiguationResponse, DecompositionResponse
 
 
 def ensure_nltk_data():
@@ -157,7 +81,9 @@ def create_context_for_sentence(
 
 
 def run_selection_stage(chat, question: str, excerpt: str, sentence: str) -> Tuple[str, str]:
-    prompt = get_prompt("claimify", "selection", {"question": question, "excerpt": excerpt, "sentence": sentence})
+    prompt = get_prompt(
+        "claimify", "selection", {"question": question, "excerpt": excerpt, "sentence": sentence}
+    )
     structured_response = chat.invoke(prompt)
 
     if not structured_response:
@@ -207,7 +133,9 @@ def run_disambiguation_stage(chat, question: str, excerpt: str, sentence: str) -
     Returns:
         Tuple of (status, processed_sentence) where status is 'resolved', 'unresolvable', or 'error'
     """
-    prompt = get_prompt("claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence})
+    prompt = get_prompt(
+        "claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence}
+    )
     structured_response = chat.invoke(prompt)
 
     if not structured_response:
@@ -255,7 +183,9 @@ def run_decomposition_stage(chat, question: str, excerpt: str, sentence: str) ->
         A list of extracted claim strings
     """
     structured_response = chat.invoke(
-        get_prompt("claimify", "decomposition", {"question": question, "excerpt": excerpt, "sentence": sentence})
+        get_prompt(
+            "claimify", "decomposition", {"question": question, "excerpt": excerpt, "sentence": sentence}
+        )
     )
 
     if not structured_response:
@@ -288,7 +218,7 @@ class ClaimifyPipeline:
     """
 
     def __init__(self, chat, question: str = "The user did not provide a question."):
-        
+
         self.question = question
 
         # Set up logging
