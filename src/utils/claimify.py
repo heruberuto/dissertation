@@ -14,7 +14,7 @@ import sys
 import logging
 from typing import List, Tuple, Optional, Literal
 from pydantic import BaseModel, Field
-from utils.chat import chat, get_prompt
+from utils.chat import chat_factory, get_prompt
 
 class SelectionResponse(BaseModel):
     """Response model for the Selection stage."""
@@ -242,7 +242,7 @@ def parse_structured_disambiguation_output(
         return "error", None
 
 
-def run_decomposition_stage(llm_client, question: str, excerpt: str, sentence: str) -> List[str]:
+def run_decomposition_stage(chat, question: str, excerpt: str, sentence: str) -> List[str]:
     """
     Executes the Decomposition stage of the Claimify pipeline using structured outputs.
 
@@ -288,17 +288,21 @@ class ClaimifyPipeline:
     Uses structured outputs for improved reliability.
     """
 
-    def __init__(self, llm_client, question: str = "The user did not provide a question."):
-        self.llm_client = llm_client
+    def __init__(self, chat, question: str = "The user did not provide a question."):
+        
         self.question = question
 
         # Set up logging
         self.setup_logging()
 
         # Verify structured outputs are supported
-        if not self.llm_client.supports_structured_outputs():
+        if not chat.supports_structured_outputs():
+            self.chat_selection = chat.with_structured_output(SelectionResponse)
+            self.chat_disambiguation = chat.with_structured_output(DisambiguationResponse)
+            self.chat_decomposition = chat.with_structured_output(DecompositionResponse)
+            
             raise ValueError(
-                f"Model {self.llm_client.model} does not support structured outputs. "
+                f"Model {chat.model} does not support structured outputs. "
                 f"Please use a compatible model like gpt-4o-2024-08-06, gpt-4o-mini, or gpt-4o."
             )
 
@@ -371,7 +375,7 @@ class ClaimifyPipeline:
 
             # Stage 2: Selection
             selection_status, verifiable_sentence = run_selection_stage(
-                self.llm_client, self.question, context_excerpt, sentence
+                self.chat_selection, self.question, context_excerpt, sentence
             )
 
             if self.logger:
@@ -382,7 +386,7 @@ class ClaimifyPipeline:
 
             # Stage 3: Disambiguation
             disambiguation_status, clarified_sentence = run_disambiguation_stage(
-                self.llm_client, self.question, context_excerpt, verifiable_sentence
+                self.chat_disambiguation, self.question, context_excerpt, verifiable_sentence
             )
 
             if self.logger:
@@ -393,7 +397,7 @@ class ClaimifyPipeline:
 
             # Stage 4: Decomposition
             extracted_claims = run_decomposition_stage(
-                self.llm_client, self.question, context_excerpt, clarified_sentence
+                self.chat_decomposition, self.question, context_excerpt, clarified_sentence
             )
 
             if self.logger:

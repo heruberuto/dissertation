@@ -223,7 +223,9 @@ def load_md_prompts(prompt_category: str, prompt_name: str = None) -> Dict[str, 
     return None
 
 
-def get_prompt(prompt_name: str, prompt_category: str = None, values: dict = None) -> Optional[ChatPromptTemplate]:
+def get_prompt(
+    prompt_name: str, prompt_category: str = None, values: dict = None
+) -> Optional[ChatPromptTemplate]:
     if prompt_category is None:
         prompt_category, prompt_name = prompt_name.split("/")
 
