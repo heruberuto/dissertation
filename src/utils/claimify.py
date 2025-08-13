@@ -12,7 +12,7 @@ import nltk
 import os
 import sys
 import logging
-from typing import List, Tuple
+from typing import Dict, List, Tuple, Union
 from utils.chat import get_prompt
 from models.claimify import SelectionResponse, DisambiguationResponse, DecompositionResponse
 
@@ -59,19 +59,6 @@ def create_context_for_sentence(
     p: int,  # Number of preceding sentences
     f: int,  # Number of following sentences
 ) -> str:
-    """
-    Creates a context string for a sentence at a given index.
-    As per Section 3.1 of the Claimify paper.
-
-    Args:
-        sentences: List of all sentences
-        index: Index of the target sentence
-        p: Number of preceding sentences to include
-        f: Number of following sentences to include
-
-    Returns:
-        Context string containing the target sentence and surrounding context
-    """
     start = max(0, index - p)
     end = min(len(sentences), index + f + 1)
 
@@ -93,16 +80,6 @@ def run_selection_stage(chat, question: str, excerpt: str, sentence: str) -> Tup
 
 
 def parse_structured_selection_output(response: SelectionResponse, original_sentence: str) -> Tuple[str, str]:
-    """
-    Parses the structured output from the Selection stage.
-
-    Args:
-        response: The structured response from the LLM
-        original_sentence: The original sentence being processed
-
-    Returns:
-        Tuple of (status, sentence) where status indicates the result
-    """
     try:
         if response.final_submission == "Contains a specific and verifiable proposition":
             if response.sentence_with_only_verifiable_information:
@@ -121,52 +98,20 @@ def parse_structured_selection_output(response: SelectionResponse, original_sent
 
 
 def run_disambiguation_stage(chat, question: str, excerpt: str, sentence: str) -> Tuple[str, str]:
-    """
-    Executes the Disambiguation stage of the Claimify pipeline using structured outputs.
-
-    Args:
-        llm_client: The LLM client to use
-        question: The question/context for the text
-        excerpt: The context excerpt
-        sentence: The sentence to process
-
-    Returns:
-        Tuple of (status, processed_sentence) where status is 'resolved', 'unresolvable', or 'error'
-    """
     prompt = get_prompt(
         "claimify", "disambiguation", {"question": question, "excerpt": excerpt, "sentence": sentence}
     )
-    structured_response = chat.invoke(prompt)
+    response = chat.invoke(prompt)
 
-    if not structured_response:
+    if not response:
         return "error", None
-
-    return parse_structured_disambiguation_output(structured_response, sentence)
-
-
-def parse_structured_disambiguation_output(
-    response: DisambiguationResponse, original_sentence: str
-) -> Tuple[str, str]:
-    """
-    Parses the structured output from the Disambiguation stage.
-
-    Args:
-        response: The structured response from the LLM
-        original_sentence: The original sentence being processed
-
-    Returns:
-        Tuple of (status, sentence) where status indicates the result
-    """
-    try:
-        if response.decontextualized_sentence:
-            if response.decontextualized_sentence == "Cannot be decontextualized":
-                return "unresolvable", None
-            else:
-                return "resolved", response.decontextualized_sentence
-        else:
+    if response.decontextualized_sentence:
+        if response.decontextualized_sentence == "Cannot be decontextualized":
             return "unresolvable", None
-    except Exception as e:
-        return "error", None
+        else:
+            return "resolved", response.decontextualized_sentence
+    else:
+        return "unresolvable", None
 
 
 def run_decomposition_stage(chat, question: str, excerpt: str, sentence: str) -> List[str]:
@@ -191,24 +136,7 @@ def run_decomposition_stage(chat, question: str, excerpt: str, sentence: str) ->
     if not structured_response:
         return []
 
-    return parse_structured_decomposition_output(structured_response)
-
-
-def parse_structured_decomposition_output(response: DecompositionResponse) -> List[str]:
-    """
-    Parses the structured output from the Decomposition stage.
-
-    Args:
-        response: The structured response from the LLM
-
-    Returns:
-        A list of extracted claim strings
-    """
-    try:
-        # Extract text from the Claim objects in final_claims
-        return [claim.text for claim in response.final_claims]
-    except Exception as e:
-        return []
+    return [claim.text for claim in structured_response.final_claims]
 
 
 class ClaimifyPipeline:
@@ -233,18 +161,15 @@ class ClaimifyPipeline:
 
     def setup_logging(self):
         """Set up logging for the pipeline."""
-        # Check if logging is enabled
         log_enabled = os.getenv("LOG_LLM_CALLS", "true").lower() in ("true", "1", "yes")
 
         if not log_enabled:
             self.logger = None
             return
 
-        # Create logger
         self.logger = logging.getLogger("claimify.pipeline")
         self.logger.setLevel(logging.INFO)
 
-        # Don't add handlers if they already exist (avoid duplicate logs)
         if self.logger.handlers:
             return
 
@@ -335,3 +260,22 @@ class ClaimifyPipeline:
             self.logger.info(f"Pipeline completed: {len(unique_claims)} unique claims extracted")
 
         return unique_claims
+
+
+class ClaimifyEvaluator:
+    def __init__(self, pipeline: ClaimifyPipeline):
+        self.pipeline = pipeline
+
+    def run(self, text: str, question: str) -> Dict[str, Union[int, float]]:
+        """
+        Runs the evaluation on the given text and question.
+
+        Args:
+            text: The input text to process
+            question: The question to ask about the text
+
+        Returns:
+            A dictionary containing evaluation metrics
+        """
+        expected_claims = []  # Define the expected claims based on the question
+        return self.pipeline.evaluate(text, expected_claims)
