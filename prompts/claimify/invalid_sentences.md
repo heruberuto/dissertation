@@ -31,3 +31,13 @@ Sentence of interest: - Sourcing materials from sustainable suppliers
 S = - Sourcing materials from sustainable suppliers
 Describe the context for S. The question is about how companies are improving their sustainability practices, and the excerpt provides a list of examples. 
 Can S be interpreted as a complete, declarative sentence as is? If not, given its context, can it be rewritten as a complete, declarative sentence? S is not a complete, declarative sentence as is. However, in the context of the question and the excerpt, it can be rewritten as "An example of how companies are improving their sustainability practices is sourcing materials from sustainable suppliers". Therefore, S can be interpreted as a complete, declarative sentence.
+
+# User message
+Question:
+{question}
+
+Excerpt from response: 
+{excerpt}
+
+Sentence of interest: 
+{sentence}

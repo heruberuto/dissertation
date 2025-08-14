@@ -15,3 +15,7 @@ Claim: Sourcing materials from sustainable suppliers
 
 C = Sourcing materials from sustainable suppliers
 In isolation, is C a complete, declarative sentence? It's missing a subject and a verb, so C is not a complete, declarative sentence.
+
+# User message
+Claim:
+{claim}

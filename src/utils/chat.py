@@ -1,44 +1,27 @@
-import os
+import os, re
 from typing import Any, Dict, Optional
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 
-
+PROMPT_SEPARATOR = "\n# user message"
 PROMPT_TEMPLATES = {}
 
 
 def load_md_prompts(prompt_category: str) -> Dict[str, str]:
-    """
-    Load Markdown prompts from a folder.
-
-    Args:
-        folder (str): The folder containing the Markdown files.
-
-    Returns:
-        Dict[str, str]: A dictionary mapping file names to their contents.
-    """
     global PROMPT_TEMPLATES
     if prompt_category not in PROMPT_TEMPLATES:
-        prompts = {}
+        prompt_templates = {}
         folder = os.path.join(os.path.dirname(__file__), "../../prompts", prompt_category)
         for filename in os.listdir(folder):
-            if filename.endswith(".system.md") or filename.endswith(".user.md"):
-                # pair system prompts with user prompts
-                id, role = filename.split(".")[:2]
-                if id not in prompts:
-                    prompts[id] = {}
-                with open(os.path.join(folder, filename), "r") as f:
-                    prompts[id][role] = f.read()
-
-        prompt_templates = {}
-        for id, roles in prompts.items():
-            prompt_templates[id] = ChatPromptTemplate.from_messages(
-                [("system", roles.get("system", "").strip()), ("user", roles.get("user", "").strip())]
-            )
-        if prompt_category not in PROMPT_TEMPLATES:
-            PROMPT_TEMPLATES[prompt_category] = {}
-        PROMPT_TEMPLATES[prompt_category].update(prompt_templates)
+            if filename.endswith(".md"):
+                with open(os.path.join(folder, filename), "r", encoding="utf-8") as f:
+                    prompts = re.split(PROMPT_SEPARATOR, f.read(), flags=re.IGNORECASE)
+                    messages = [("system", prompts[0].strip())]
+                    if len(prompts) == 2:
+                        messages.append(("user", prompts[1].strip()))
+                    prompt_templates[filename] = ChatPromptTemplate.from_messages(messages)
+        PROMPT_TEMPLATES[prompt_category] = prompt_templates
     return PROMPT_TEMPLATES[prompt_category]
 
 

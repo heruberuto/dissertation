@@ -83,3 +83,16 @@ Element 6: CleanTech has a partnership with MiniMax to significantly improve was
 Element 7: CleanTech demonstrates the power of collaboration
 - C3 says "CleanTech has partnerships with technology companies to improve waste management"
 - What is not explicitly stated or strongly implied by C, and is therefore grounds for lack of full coverage? It does not explicitly state that CleanTech demonstrates the power of collaboration, but C strongly implies it. Therefore it is implied that E7 is fully covered by C
+
+# User message
+Question (context for E):
+{question}
+
+Excerpt from response (context for E):
+{excerpt}
+
+Claims (C):
+{claims}
+
+Elements (E):
+{elements}

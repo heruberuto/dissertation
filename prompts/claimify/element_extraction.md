@@ -55,3 +55,13 @@ What are ALL elements of S_restated?
 "CleanTech has a partnership with MiniMax to significantly improve waste management -> 'significantly' is not verifiable, but the rest is verifiable, so it contains verifiable information",
 "CleanTech demonstrates the power of collaboration -> it's an interpretation, so it does not contain verifiable information",
 ]
+
+# User message
+Question:
+{question}
+
+Excerpt from response:
+{excerpt}
+
+Sentence of interest: 
+{sentence}

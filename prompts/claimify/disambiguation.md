@@ -43,3 +43,13 @@ sentence>':" followed by your step-by-step reasoning for checking (1) referentia
 "Changes Needed to Decontextualize the Sentence:" followed by a list of all changes needed to ensure the Sentence is fully decontextualized (e.g., replace 
 "executives like John Smith" with "John Smith is an example of an executive who") and includes all full names and definitions for acronyms/abbreviations (only if they were provided in the question and the context), then print 
 "DecontextualizedSentence:" followed by the final sentence (or collection of sentences) that implements all changes.
+
+# User message
+Question:
+{question}
+
+Excerpt:
+{excerpt}
+
+Sentence:
+{sentence}

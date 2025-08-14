@@ -52,3 +52,13 @@ Final submission:
 
 Sentence with only verifiable information:
 <insert changed sentence, or 'remains unchanged' if no changes, or 'None' if the sentence does NOT contain a specific and verifiable proposition>
+
+# User message
+Question:
+{question}
+
+Excerpt:
+{excerpt}
+
+Sentence:
+{sentence}

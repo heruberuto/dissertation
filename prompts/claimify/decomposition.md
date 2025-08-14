@@ -70,3 +70,13 @@ Next, it is EXTREMELY important that you consider that each fact-checker in the 
 [
 "<insert a specific, verifiable, and fully decontextualized proposition with as few or as many [...] as needed> - true or false?",
 ]
+
+# User message
+Question:
+{question}
+
+Excerpt:
+{excerpt}
+
+Sentence:
+{sentence}

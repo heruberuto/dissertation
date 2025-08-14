@@ -31,3 +31,19 @@ C = She plans to speak at other conferences next year.
 Would someone reading C without any context have questions? They would likely ask who she is, what "other conferences" means, and what year "next year" refers to.
 Are any of these questions answered by the sentence or its context? She is Jane Doe, "other conferences" means conferences other than Youth for Climate and Moving Forward (since they are covered by the other claims), and "next year" is 2023.
 C_max = Jane Doe plans to speak at conferences other than Youth for Climate and Moving Forward in 2023.
+
+# User message
+Question:
+{question}
+
+Excerpt from response: 
+{excerpt}
+
+Sentence of interest: 
+{sentence}
+
+All claims:
+{claims}
+
+Claim of interest: 
+{claim}

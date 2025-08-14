@@ -56,3 +56,18 @@ What are ALL elements of C? (1) They discovered the oil spill, (2) They discover
 Does the Statements and Actions Rule apply to S, or does it qualify as an exception? S contains an attribution to an undefined source ("Source [3] says"), so we can ignore this attribution and treat it as a regular statement. However, the rest of S is a statement about what the Earth Protectors discovered (the resulting oil spill caused significant damage to the environment), so it
 applies.
 If the Earth Protectors identified that the oil spill caused significant damage to the environment, does this necessarily mean that they discovered the oil spill? Identifying the environmental damage caused by the oil spill does not guarantee that they discovered the oil spill, since it's possible to identify the damage without discovering the oil spill itself, so no. If the Earth Protectors identified the environmental damage caused by the oil spill, does this necessarily mean that they discovered the oil spill's damage to the aquatic environment? The environment is not necessarily the aquatic environment, so no. Therefore, S does not entail all elements of C.
+
+# User message
+Question:
+{question}
+
+Excerpt from response: 
+{excerpt}
+
+Sentence of interest: 
+{sentence}
+
+Claim:
+{claim}
+
+REMEMBER: if the context of S entails C, but S itself does not, you should still conclude that S entails C.
