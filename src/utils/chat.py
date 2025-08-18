@@ -20,7 +20,7 @@ def load_md_prompts(prompt_category: str) -> Dict[str, str]:
                     messages = [("system", prompts[0].strip())]
                     if len(prompts) == 2:
                         messages.append(("user", prompts[1].strip()))
-                    prompt_templates[filename] = ChatPromptTemplate.from_messages(messages)
+                    prompt_templates[filename.replace(".md", "")] = ChatPromptTemplate.from_messages(messages)
         PROMPT_TEMPLATES[prompt_category] = prompt_templates
     return PROMPT_TEMPLATES[prompt_category]
 
