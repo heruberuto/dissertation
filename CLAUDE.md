@@ -115,7 +115,6 @@ This repository includes a complete reproduction of the Claimify methodology for
 ### LangChain Migration
 The project has been fully migrated to the LangChain ecosystem:
 
-- **Unified Chat Interface**: `chat_factory()` function supports multiple LLM providers
 - **Prompt Management**: Structured prompts loaded from markdown files
 - **Structured Outputs**: Pydantic models for reliable response parsing
 - **Provider Flexibility**: Easy switching between OpenAI, Ollama, and Hugging Face models
