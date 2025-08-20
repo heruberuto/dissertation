@@ -1,0 +1,10 @@
+[MASTER]
+# Add src to Python path for Pylint runs (alternative to --init-hook)
+init-hook=
+    "import os, sys; sys.path.append(os.path.join(os.getcwd(), 'src'))"
+
+[MESSAGES CONTROL]
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116   # missing-function-docstring

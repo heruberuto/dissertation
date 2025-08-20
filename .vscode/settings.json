@@ -12,5 +12,12 @@
         "titleBar.inactiveBackground": "#4ed9b899"
     },
     "peacock.remoteColor": "#4ED9B850",
-    "kiroAgent.configureMCP": "Disabled"
+    "kiroAgent.configureMCP": "Disabled",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/src"
+    ],
+    "python.envFile": "${workspaceFolder}/.env",
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}/src"
+    }
 }
