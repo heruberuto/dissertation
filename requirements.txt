@@ -24,3 +24,4 @@ langchain-huggingface
 langchain-openai
 langchain-ollama
 langchain-exa
+langgraph
