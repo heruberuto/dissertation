@@ -8,7 +8,6 @@
 #SBATCH --job-name averitec
 #SBATCH --output logs/jupyter.%j.out
 
-
 # Replace with your own virtual environment
 ml Python/3.12.3-GCCcore-13.3.0
 ml CUDA/12.6.0

@@ -15,8 +15,8 @@ file_with_largest_no = [f for f in top_two_files if "jupyter" in f][0]
 print_next = False
 with open(file_with_largest_no) as file:
     for line in file:
-        if "tunnelling instructions" in line:
-            print_next = True
         if print_next:
             print(line.replace("tunnelling instructions:", "").strip())
             exit(0)
+        if "tunnelling instructions" in line:
+            print_next = True
