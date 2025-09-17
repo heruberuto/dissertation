@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --partition amd
+#SBATCH --partition amdfast
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 1
 #SBATCH --mem-per-cpu 96G
-#SBATCH --time 24:00:00
+#SBATCH --time 4:00:00
 #SBATCH --job-name averitec
 #SBATCH --output logs/jupyter.%j.out
 
