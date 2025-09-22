@@ -209,3 +209,6 @@ ollama.crt
 logs/*
 logs
 ml_avail.txt
+
+pretty.json
+pretty.md
